@@ -1,5 +1,3 @@
-# Streamlit App
+# Report Vaccinazioni Covid-19 Italia
 
-## Requisites
-
-In order to access teh GitHub API its needed an access token.
+## Web app developed with Streamlit
