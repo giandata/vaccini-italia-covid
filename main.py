@@ -2,26 +2,30 @@ import streamlit as st
 import os
 
 import pandas as pd
+import numpy as np
 
 base_url = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/"
 
-data_url = ["anagrafica-vaccini-summary-latest.csv",
+data_url = ["vaccini-summary-latest.csv",
+            "anagrafica-vaccini-summary-latest.csv",
             "consegne-vaccini-latest.csv",
-            "punti-somministrazione-latest.csv",
             "somministrazioni-vaccini-latest.csv",
-            "somministrazioni-vaccini-summary-latest.csv",
-            "vaccini-summary-latest.csv"]
+            "punti-somministrazione-latest.csv",
+            "somministrazioni-vaccini-summary-latest.csv"
+            ]
 
-@st.cache
+@st.cache(persist=True)
 def retrieve_data(url):
     full_url = base_url + url
-    return pd.read_csv(full_url,index_col=0,parse_dates=[0])
+    return pd.read_csv(full_url,index_col=0,parse_dates=[0],header='infer')
 
 
 def render_checkbox(url):
     if st.checkbox("Carica dati",key=url):
-        data = retrieve_data(url)
-        st.dataframe(data)
+        return retrieve_data(url)
+
+    else:
+        return False   
 
 def nice_header(string):
     url_without_ext = os.path.splitext(string)[0]
@@ -29,12 +33,25 @@ def nice_header(string):
     url_readable = " ".join(url_clean)
     st.subheader(url_readable.upper())
 
-
 st.title ("Tracking vaccinazioni Covid-19")
 
 tabs = ["Informazioni","Esploratore","Tracciamento"]
 
 page = st.sidebar.selectbox("Pagine",tabs)
+
+def filter_data(df,column,filter_all):
+    cols=[]
+    for col in df.columns:
+        cols.append(col)
+    
+    options = sorted((filter_all,*list(df[column].unique())))
+    
+    filter = st.selectbox("Filtrare",options,key=(df,col)) 
+    if filter == filter_all:
+        st.dataframe(df)
+    else:
+        filter_df=df[df[column]==filter]
+        st.dataframe(filter_df)
 
 
 if page == "Informazioni":
@@ -47,7 +64,17 @@ if page == "Informazioni":
 if page == "Esploratore":
     for url in data_url:
         nice_header(url)
-        render_checkbox(url)
+        data = render_checkbox(url)
+       
+        if data is not False:
+            if url in ["consegne-vaccini-latest.csv","somministrazioni-vaccini-latest.csv"]:
+                filter_data(data,"fornitore","Tutti i fornitori")
+            elif url == "punti-somministrazione-latest.csv":
+                filter_data(data,"provincia","Tutte le province")
+            else:
+                st.dataframe(data)
+            
+        
 
 if page == "Tracciamento":
     st.balloons()
