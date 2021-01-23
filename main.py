@@ -14,6 +14,15 @@ data_url = ["vaccini-summary-latest.csv",
             "somministrazioni-vaccini-summary-latest.csv"
             ]
 
+st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico")
+
+title_style = """
+<div style="background-color:#5ecc70",padding:4px;">
+<h1 style ="color:black">Monitoraggio dati vaccinazioni Covid-19 </h1>
+</div>
+"""
+st.markdown(title_style,unsafe_allow_html=True)
+
 @st.cache(persist=True)
 def retrieve_data(url):
     full_url = base_url + url
@@ -33,9 +42,7 @@ def nice_header(string):
     url_readable = " ".join(url_clean)
     st.subheader(url_readable.upper())
 
-st.title ("Tracking vaccinazioni Covid-19")
-
-tabs = ["Informazioni","Esploratore","Tracciamento"]
+tabs = ["Informazioni","Consulta Dati","Tracciamento"]
 
 page = st.sidebar.selectbox("Pagine",tabs)
 
@@ -56,12 +63,21 @@ def filter_data(df,column,filter_all):
 
 if page == "Informazioni":
 
+    st.image("fiore.jpg",width=700)
+
     st.write("Autori:")
-    st.text("Giancarlo Di Donato")
-    st.text("Francesco Di Donato")
+    st.subheader("Giancarlo Di Donato")
+    st.subheader("Francesco Di Donato")
 
+    
+    st.markdown(""" Fonte: **[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
+    
+    st.markdown("""Codice: **[GitHub](https://github.com/giandata/streamlit) ** """)
 
-if page == "Esploratore":
+    st.write("Creato: 23/01/2021")
+    st.write("Versione 1.0.0")
+
+if page == "Consulta Dati":
     for url in data_url:
         nice_header(url)
         data = render_checkbox(url)
@@ -77,7 +93,7 @@ if page == "Esploratore":
         
 
 if page == "Tracciamento":
-    st.balloons()
+    st.write("Sezione in costruzione")
 
 
 
