@@ -1,29 +1,39 @@
 import streamlit as st
-from github import Github
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
-token = os.getenv("TOKEN")
-
-g = Github(token)
-
-st.title("Github Connection App")
-
-user = g.get_user()
-username = user.login
-
-st.subheader("User: {}".format(username))
-
-repos = user.get_repos()
-
-st.subheader("Current Repos")
-
-for repo in repos:
-    st.write(repo.name) 
-
 import pandas as pd
-url = 'https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/anagrafica-vaccini-summary-latest.csv'
-df = pd.read_csv(url,index_col=0,parse_dates=[0])
 
-st.write(df.head())
+base_url = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/"
+
+data_url = ["anagrafica-vaccini-summary-latest.csv",
+            "consegne-vaccini-latest.csv",
+            "punti-somministrazione-latest.csv",
+            "somministrazioni-vaccini-latest.csv",
+            "somministrazioni-vaccini-summary-latest.csv",
+            "vaccini-summary-latest.csv"]
+
+
+st.title ("Tracking vaccinazioni Covid-19")
+
+tabs = ["Esploratore","Tracciamento"]
+
+page = st.sidebar.selectbox("Pagine",tabs)
+
+if page == "Esploratore":
+    for url in data_url:
+        full_url = base_url + url
+        url_without_ext = os.path.splitext(url)[0]
+        url_clean = url_without_ext.split("-")
+        url_readable = " ".join(url_clean)
+        st.subheader(url_readable.upper())
+        if st.checkbox("Vedere dati",key = url_readable):
+            df = pd.read_csv(full_url,index_col=0,parse_dates=[0])
+            st.dataframe(df)
+
+if page == "Tracciamento":
+    st.balloons()
+
+
+
+
+        
