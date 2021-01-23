@@ -7,6 +7,9 @@ name = "pypi"
 streamlit = "*"
 matplotlib = "*"
 pygithub = "*"
+requests = "*"
+pandas = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

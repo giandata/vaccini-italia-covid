@@ -1,17 +1,29 @@
 import streamlit as st
 from github import Github
+from dotenv import load_dotenv
+import os
 
-g = Github("giandata","password")
+load_dotenv()
+token = os.getenv("TOKEN")
 
-# g = Github("acces_token")
+g = Github(token)
 
-for repo in g.get_user().get_repos():
-    repos=[]
-    print(repo.name)
-    return repos.append(repo.name)
+st.title("Github Connection App")
 
+user = g.get_user()
+username = user.login
 
-st.title("Github connection App")
+st.subheader("User: {}".format(username))
 
-st.write
+repos = user.get_repos()
 
+st.subheader("Current Repos")
+
+for repo in repos:
+    st.write(repo.name) 
+
+import pandas as pd
+url = 'https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/anagrafica-vaccini-summary-latest.csv'
+df = pd.read_csv(url,index_col=0,parse_dates=[0])
+
+st.write(df.head())
