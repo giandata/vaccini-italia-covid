@@ -23,7 +23,7 @@ title_style = """
 """
 st.markdown(title_style,unsafe_allow_html=True)
 
-@st.cache(persist=True)
+#@st.cache(persist=True)
 def retrieve_data(url):
     full_url = base_url + url
     return pd.read_csv(full_url,index_col=0,parse_dates=[0],header='infer')
@@ -60,6 +60,9 @@ def filter_data(df,column,filter_all):
         filter_df=df[df[column]==filter]
         st.dataframe(filter_df)
 
+def chart(df):
+    st.linechart()
+
 
 if page == "Informazioni":
 
@@ -89,13 +92,79 @@ if page == "Consulta Dati":
                 filter_data(data,"provincia","Tutte le province")
             else:
                 st.dataframe(data)
-            
-        
+
+
 
 if page == "Tracciamento":
-    st.write("Sezione in costruzione")
-
-
-
-
+    
+    chart1 = retrieve_data("vaccini-summary-latest.csv")
+    max_date = chart1["ultimo_aggiornamento"][0]
+    st.text("")
         
+    st.subheader(f"Statistiche generali - Dati aggiornati al **{max_date}**")    
+
+    dosi_consegnate = chart1["dosi_consegnate"].sum()
+    dosi_somministrate = chart1["dosi_somministrate"].sum()
+    ratio_uso = round((dosi_somministrate / dosi_consegnate)*100,1)
+
+    ita_pop = 60411237
+    #explore API worldometer
+
+    st.info(f"Totale dosi consegnate  {dosi_consegnate}")
+    st.success(f"Totale dosi somministrate  {dosi_somministrate}  ( **{ratio_uso} %** )  delle dosi distribuite")
+    
+    vaccined_df = retrieve_data("anagrafica-vaccini-summary-latest.csv")
+    vaccined_pop_complete = vaccined_df["seconda_dose"].sum()
+    vaccined_pop_start = vaccined_df["prima_dose"].sum()
+    
+    ratio_pop_complete = round((vaccined_pop_complete/ita_pop)*100,3)
+
+    ratio_pop_start = (round(((vaccined_pop_start-vaccined_pop_complete)/ita_pop)*100,3))
+    
+    st.write ("Si considerano vaccinate le persone che abbiano ricevuto 2 dosi a distanza di 3 settimane...")
+    st.warning(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
+    st.progress(ratio_pop_start/100)
+    st.error(f"Popolazione vaccinata: {ratio_pop_complete} % ")
+    st.progress(ratio_pop_complete/100)
+    
+    #daily/weekly/monthly average vaccined people 
+
+    
+    st.write("")
+    st.subheader("Consegne dosi")
+    df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
+    ss_consegnate = df_consegnate.groupby(["data_consegna"]).sum()
+    st.bar_chart(ss_consegnate)
+
+    st.subheader("Utilizzo dosi")
+    df_somministrate = retrieve_data("somministrazioni-vaccini-latest.csv")
+    ss_somministrate = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate.index).sum()
+    st.area_chart(ss_somministrate)
+    
+     
+    st.write("")
+
+
+    choice_chart = st.radio(label="Aggruppare dati per",options=("Regioni","Fascia anagrafica","Fornitore"))
+    if choice_chart == "Regioni":
+        uso_region = df_somministrate.groupby(["area"]).sum()
+        st.bar_chart(uso_region[["prima_dose","seconda_dose"]])
+    elif choice_chart == "Fascia anagrafica":
+        uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
+        st.bar_chart(uso_anagrafica)
+    elif choice_chart == "Fornitore":
+        uso_fornitore =  df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fornitore"]).sum()    
+        st.bar_chart(uso_fornitore)
+    
+
+
+    # uso_region["totale"] = uso_region["prima_dose"] + uso_region["seconda_dose"]
+    # uso_region_sorted = uso_region.sort_values(by=["totale"],ascending = False)
+    # st.dataframe(uso_region_sorted)
+
+
+   
+
+
+
+
