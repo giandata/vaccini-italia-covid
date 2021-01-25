@@ -42,7 +42,7 @@ def nice_header(string):
     url_readable = " ".join(url_clean)
     st.subheader(url_readable.upper())
 
-tabs = ["Informazioni","Consulta Dati","Tracciamento"]
+tabs = ["Tracciamento","Consulta Dati","Informazioni",]
 
 page = st.sidebar.selectbox("Pagine",tabs)
 
@@ -64,36 +64,6 @@ def chart(df):
     st.linechart()
 
 
-if page == "Informazioni":
-
-    st.image("fiore.jpg",width=700)
-
-    st.write("Autori:")
-    st.subheader("Giancarlo Di Donato")
-    st.subheader("Francesco Di Donato")
-
-    
-    st.markdown(""" Fonte: **[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
-    
-    st.markdown("""Codice: **[GitHub](https://github.com/giandata/streamlit) ** """)
-
-    st.write("Creato: 23/01/2021")
-    st.write("Versione 1.0.0")
-
-if page == "Consulta Dati":
-    for url in data_url:
-        nice_header(url)
-        data = render_checkbox(url)
-       
-        if data is not False:
-            if url in ["consegne-vaccini-latest.csv","somministrazioni-vaccini-latest.csv"]:
-                filter_data(data,"fornitore","Tutti i fornitori")
-            elif url == "punti-somministrazione-latest.csv":
-                filter_data(data,"provincia","Tutte le province")
-            else:
-                st.dataframe(data)
-
-
 
 if page == "Tracciamento":
     
@@ -111,8 +81,9 @@ if page == "Tracciamento":
     #explore API worldometer
 
     st.info(f"Totale dosi consegnate  {dosi_consegnate}")
-    st.success(f"Totale dosi somministrate  {dosi_somministrate}  ( **{ratio_uso} %** )  delle dosi distribuite")
-    
+    st.info(f"Totale dosi somministrate  {dosi_somministrate}  ( **{ratio_uso} %** )  delle dosi distribuite")
+
+
     vaccined_df = retrieve_data("anagrafica-vaccini-summary-latest.csv")
     vaccined_pop_complete = vaccined_df["seconda_dose"].sum()
     vaccined_pop_start = vaccined_df["prima_dose"].sum()
@@ -122,10 +93,26 @@ if page == "Tracciamento":
     ratio_pop_start = (round(((vaccined_pop_start-vaccined_pop_complete)/ita_pop)*100,3))
     
     st.write ("Si considerano vaccinate le persone che abbiano ricevuto 2 dosi a distanza di 3 settimane...")
-    st.warning(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
-    st.progress(ratio_pop_start/100)
-    st.error(f"Popolazione vaccinata: {ratio_pop_complete} % ")
-    st.progress(ratio_pop_complete/100)
+    
+    if ratio_pop_start >= 60:
+        st.success(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
+        st.progress(ratio_pop_start/100)
+    elif ratio_pop_start >= 30:
+        st.warning(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
+        st.progress(ratio_pop_start/100)
+    else:
+        st.error(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
+        st.progress(ratio_pop_start/100)
+
+    if ratio_pop_start >= 60:
+        st.success(f"Popolazione vaccinata: {ratio_pop_complete} % ")
+        st.progress(ratio_pop_complete/100)
+    elif ratio_pop_start >= 30:
+        st.warning(f"Popolazione vaccinata: {ratio_pop_complete} % ")
+        st.progress(ratio_pop_complete/100)
+    else:
+        st.error(f"Popolazione vaccinata: {ratio_pop_complete} % ")
+        st.progress(ratio_pop_complete/100)
     
     #daily/weekly/monthly average vaccined people 
 
@@ -162,8 +149,34 @@ if page == "Tracciamento":
     # uso_region_sorted = uso_region.sort_values(by=["totale"],ascending = False)
     # st.dataframe(uso_region_sorted)
 
+if page == "Consulta Dati":
+    for url in data_url:
+        nice_header(url)
+        data = render_checkbox(url)
+       
+        if data is not False:
+            if url in ["consegne-vaccini-latest.csv","somministrazioni-vaccini-latest.csv"]:
+                filter_data(data,"fornitore","Tutti i fornitori")
+            elif url == "punti-somministrazione-latest.csv":
+                filter_data(data,"provincia","Tutte le province")
+            else:
+                st.dataframe(data)
 
-   
+if page == "Informazioni":
+
+    st.image("fiore.jpg",width=700)
+
+    st.write("Autori:")
+    st.subheader("Giancarlo Di Donato")
+    st.subheader("Francesco Di Donato")
+
+    
+    st.markdown(""" Fonte: **[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
+    
+    st.markdown("""Codice: **[GitHub](https://github.com/giandata/streamlit) ** """)
+
+    st.write("Creato: 23/01/2021")
+    st.write("Versione 1.0.1")
 
 
 
