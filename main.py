@@ -170,8 +170,9 @@ if page == "Informazioni":
     st.subheader("Giancarlo Di Donato")
     st.subheader("Francesco Di Donato")
 
-    
-    st.markdown(""" Fonte: **[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
+    st.write("Fonti:")
+    st.markdown("""**[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
+    st.markdown("""[Worldometers](https://www.worldometers.info/world-population/italy-population/)""")
     
     st.markdown("""Codice: **[GitHub](https://github.com/giandata/streamlit) ** """)
 
