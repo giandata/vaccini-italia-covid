@@ -143,7 +143,7 @@ if page == "Tracciamento":
     ss_somministrate = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate.index).sum()
     st.area_chart(ss_somministrate)
     st.text("Osservazioni")
-    st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisca drasticamente. Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che abbiano ricevuto la prima dose in precedenza.
+    st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.
      In questo senso è importante che l'approviggionamento, la distribuzione e lo stoccaggio siano coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
     
     #lookup -21
@@ -157,7 +157,7 @@ if page == "Tracciamento":
     if aggr_mean == "Giornaliera":
         avg_daily = round(ss_somministrate.mean(),0).astype(int)
         st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{avg_daily[0]}**. ")
-        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round((ita_pop/avg_daily[0]),0).astype(int)}** giorni,ovvero in **{round((pop_perc/avg_daily[0])/365.25,2)}** anni.")
+        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round((pop_perc/avg_daily[0]),0).astype(int)}** giorni,ovvero in **{round((pop_perc/avg_daily[0])/365.25,2)}** anni.")
     elif aggr_mean == "Settimanale":
         weekly = (avg_daily[0])*7
         st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{weekly}**. ")
