@@ -97,11 +97,19 @@ if page == "Tracciamento":
     #daily/weekly/monthly average vaccined people 
     uso = retrieve_data("somministrazioni-vaccini-latest.csv")
 
-    uso["totale"] = uso["prima_dose"] + uso["seconda_dose"]
+    #uso["totale"] = uso["prima_dose"] + uso["seconda_dose"]
     #uso_sorted = uso_region.sort_values(by=["totale"],ascending = False)
-    avg_uso_daily = round(uso["totale"].groupby(uso.index).mean(),0)
-    st.dataframe(avg_uso_daily)
+    #avg_uso_daily = round(uso["totale"].groupby(uso.index).mean(),0)
+    #st.dataframe(avg_uso_daily)
 
+    vaccined_avg_prima = round(uso["prima_dose"].groupby(uso.index).mean(),0)
+    #st.dataframe(vaccined_avg_prima)
+
+    vaccined_avg_seconda = round(uso["seconda_dose"].groupby(uso.index).mean(),0)
+    #st.dataframe(vaccined_avg_seconda)
+
+    df_avg_daily = pd.concat([vaccined_avg_prima, vaccined_avg_seconda], axis=1)
+   
     if ratio_pop_start >= 60:
         st.success(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
         st.progress(ratio_pop_start/100)
