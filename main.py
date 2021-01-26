@@ -92,23 +92,22 @@ if page == "Tracciamento":
 
     ratio_pop_start = (round(((vaccined_pop_start-vaccined_pop_complete)/ita_pop)*100,3))
     
-    st.write ("Si considerano vaccinate le persone che abbiano ricevuto 2 dosi a distanza di 3 settimane...")
+    st.write ("Si considerano vaccinate le persone che hanno ricevuto 2 dosi a distanza di circa 3 settimane.")
     
-    #daily/weekly/monthly average vaccined people 
-    uso = retrieve_data("somministrazioni-vaccini-latest.csv")
+    # uso = retrieve_data("somministrazioni-vaccini-latest.csv")
 
-    #uso["totale"] = uso["prima_dose"] + uso["seconda_dose"]
-    #uso_sorted = uso_region.sort_values(by=["totale"],ascending = False)
-    #avg_uso_daily = round(uso["totale"].groupby(uso.index).mean(),0)
-    #st.dataframe(avg_uso_daily)
+    # #uso["totale"] = uso["prima_dose"] + uso["seconda_dose"]
+    # #uso_sorted = uso_region.sort_values(by=["totale"],ascending = False)
+    # #avg_uso_daily = round(uso["totale"].groupby(uso.index).mean(),0)
+    # #st.dataframe(avg_uso_daily)
 
-    vaccined_avg_prima = round(uso["prima_dose"].groupby(uso.index).mean(),0)
-    #st.dataframe(vaccined_avg_prima)
+    # vaccined_avg_prima = round(uso["prima_dose"].groupby(uso.index).mean(),0)
+    # #st.dataframe(vaccined_avg_prima)
 
-    vaccined_avg_seconda = round(uso["seconda_dose"].groupby(uso.index).mean(),0)
-    #st.dataframe(vaccined_avg_seconda)
+    # vaccined_avg_seconda = round(uso["seconda_dose"].groupby(uso.index).mean(),0)
+    # #st.dataframe(vaccined_avg_seconda)
 
-    df_avg_daily = pd.concat([vaccined_avg_prima, vaccined_avg_seconda], axis=1)
+    # df_avg_daily = pd.concat([vaccined_avg_prima, vaccined_avg_seconda], axis=1)
    
     if ratio_pop_start >= 60:
         st.success(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
@@ -143,8 +142,41 @@ if page == "Tracciamento":
     df_somministrate = retrieve_data("somministrazioni-vaccini-latest.csv")
     ss_somministrate = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate.index).sum()
     st.area_chart(ss_somministrate)
+    st.text("Osservazioni")
+    st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisca drasticamente. Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che abbiano ricevuto la prima dose in precedenza.
+     In questo senso è importante che l'approviggionamento, la distribuzione e lo stoccaggio siano coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
     
-     
+    #lookup -21
+
+    avg_daily = round(ss_somministrate.mean(),0).astype(int)
+    
+    st.subheader("Stime preliminari")
+    aggr_mean= st.selectbox("Media",["Giornaliera","Settimanale","Mensile"])
+    pop_slider = st.slider("Percentuale popolazione vaccinata (%)",1,100)
+    pop_perc = ita_pop * (pop_slider/100)
+    if aggr_mean == "Giornaliera":
+        avg_daily = round(ss_somministrate.mean(),0).astype(int)
+        st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{avg_daily[0]}**. ")
+        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round((ita_pop/avg_daily[0]),0).astype(int)}** giorni,ovvero in **{round((pop_perc/avg_daily[0])/365.25,2)}** anni.")
+    elif aggr_mean == "Settimanale":
+        weekly = (avg_daily[0])*7
+        st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{weekly}**. ")
+        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round(pop_perc/weekly,0).astype(int)}** settimane.") 
+    else:
+        monthly = ((avg_daily[0])*30.4375).astype(int)
+        st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{monthly}**. ")
+        st.write(f"Con questo volume, raggiungeremo il **{pop_slider/100} % ** della popolazione in **{round(pop_perc/monthly,0).astype(int)}** mesi.")     
+
+    if st.checkbox ("Vedere serie storica"):
+        st.dataframe(ss_somministrate)
+
+    
+    
+
+
+ 
+
+
     st.write("")
 
 
