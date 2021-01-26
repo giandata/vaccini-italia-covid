@@ -94,6 +94,14 @@ if page == "Tracciamento":
     
     st.write ("Si considerano vaccinate le persone che abbiano ricevuto 2 dosi a distanza di 3 settimane...")
     
+    #daily/weekly/monthly average vaccined people 
+    uso = retrieve_data("somministrazioni-vaccini-latest.csv")
+
+    uso["totale"] = uso["prima_dose"] + uso["seconda_dose"]
+    #uso_sorted = uso_region.sort_values(by=["totale"],ascending = False)
+    avg_uso_daily = round(uso["totale"].groupby(uso.index).mean(),0)
+    st.dataframe(avg_uso_daily)
+
     if ratio_pop_start >= 60:
         st.success(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
         st.progress(ratio_pop_start/100)
@@ -114,7 +122,7 @@ if page == "Tracciamento":
         st.error(f"Popolazione vaccinata: {ratio_pop_complete} % ")
         st.progress(ratio_pop_complete/100)
     
-    #daily/weekly/monthly average vaccined people 
+    
 
     
     st.write("")
@@ -145,9 +153,7 @@ if page == "Tracciamento":
     
 
 
-    # uso_region["totale"] = uso_region["prima_dose"] + uso_region["seconda_dose"]
-    # uso_region_sorted = uso_region.sort_values(by=["totale"],ascending = False)
-    # st.dataframe(uso_region_sorted)
+    
 
 if page == "Consulta Dati":
     for url in data_url:
@@ -169,7 +175,7 @@ if page == "Informazioni":
     st.write("Autori:")
     st.subheader("Giancarlo Di Donato")
     st.subheader("Francesco Di Donato")
-
+    st.write("")
     st.write("Fonti:")
     st.markdown("""**[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
     st.markdown("""[Worldometers](https://www.worldometers.info/world-population/italy-population/)""")
