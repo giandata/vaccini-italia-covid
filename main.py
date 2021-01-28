@@ -88,68 +88,69 @@ if page == "Tracciamento":
     vaccined_pop_complete = vaccined_df["seconda_dose"].sum()
     vaccined_pop_start = vaccined_df["prima_dose"].sum()
     
-    ratio_pop_complete = round((vaccined_pop_complete/ita_pop)*100,3)
+    ratio_pop_complete = round((vaccined_pop_complete/ita_pop)*100,2)
 
-    ratio_pop_start = (round(((vaccined_pop_start-vaccined_pop_complete)/ita_pop)*100,3))
+    ratio_pop_start = (round(((vaccined_pop_start)/ita_pop)*100,2))
     
-    st.write ("Si considerano vaccinate le persone che hanno ricevuto 2 dosi a distanza di circa 3 settimane.")
-    
-    # uso = retrieve_data("somministrazioni-vaccini-latest.csv")
+    st.write ("Si considerano vaccinate le persone che hanno ricevuto la seconda dose entro a partire da 21 ed entro i 42 giorni successivi (3-6 settimane di distanza).")
 
-    # #uso["totale"] = uso["prima_dose"] + uso["seconda_dose"]
-    # #uso_sorted = uso_region.sort_values(by=["totale"],ascending = False)
-    # #avg_uso_daily = round(uso["totale"].groupby(uso.index).mean(),0)
-    # #st.dataframe(avg_uso_daily)
-
-    # vaccined_avg_prima = round(uso["prima_dose"].groupby(uso.index).mean(),0)
-    # #st.dataframe(vaccined_avg_prima)
-
-    # vaccined_avg_seconda = round(uso["seconda_dose"].groupby(uso.index).mean(),0)
-    # #st.dataframe(vaccined_avg_seconda)
-
-    # df_avg_daily = pd.concat([vaccined_avg_prima, vaccined_avg_seconda], axis=1)
    
     if ratio_pop_start >= 60:
-        st.success(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
+        st.success(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
         st.progress(ratio_pop_start/100)
     elif ratio_pop_start >= 30:
-        st.warning(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
+        st.warning(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start}% ({vaccined_pop_start}) ")
         st.progress(ratio_pop_start/100)
     else:
-        st.error(f"Popolazione in corso di vaccinazione: {ratio_pop_start} % ")
+        st.error(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
         st.progress(ratio_pop_start/100)
 
     if ratio_pop_start >= 60:
-        st.success(f"Popolazione vaccinata: {ratio_pop_complete} % ")
+        st.success(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} %  ({vaccined_pop_complete})")
         st.progress(ratio_pop_complete/100)
     elif ratio_pop_start >= 30:
-        st.warning(f"Popolazione vaccinata: {ratio_pop_complete} % ")
+        st.warning(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
         st.progress(ratio_pop_complete/100)
     else:
-        st.error(f"Popolazione vaccinata: {ratio_pop_complete} % ")
+        st.error(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
         st.progress(ratio_pop_complete/100)
     
     
 
     
-    st.write("")
-    st.subheader("Consegne dosi")
-    df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
-    ss_consegnate = df_consegnate.groupby(["data_consegna"]).sum()
-    st.bar_chart(ss_consegnate)
+  
 
     st.subheader("Utilizzo dosi")
     df_somministrate = retrieve_data("somministrazioni-vaccini-latest.csv")
     ss_somministrate = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate.index).sum()
+    
+    available_doses = dosi_consegnate - dosi_somministrate
+    avg_daily = round(ss_somministrate.mean(),0).astype(int)
+    total_avg_daily = avg_daily[0] + avg_daily[1]
+    available_days = round(available_doses/total_avg_daily,0).astype(int)
+
+    if available_days >= 10:
+        st.success(f"A questo ritmo di somministrazione  sono disponibili dosi per altri **{available_days}** giorni")
+    elif available_days >= 5:
+        st.error(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
+    else:
+        st.success(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
+    
     st.area_chart(ss_somministrate)
     st.text("Osservazioni")
     st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.
      In questo senso è importante che l'approviggionamento, la distribuzione e lo stoccaggio siano coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
     
     #lookup -21
+    st.write("")
+    st.subheader("Consegne dosi")
+    df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
+    ss_consegnate = df_consegnate.groupby(["data_consegna"]).sum()
+    st.bar_chart(ss_consegnate)
 
-    avg_daily = round(ss_somministrate.mean(),0).astype(int)
     
+
+
     st.subheader("Stime preliminari")
     aggr_mean= st.selectbox("Media",["Giornaliera","Settimanale","Mensile"])
     pop_slider = st.slider("Percentuale popolazione vaccinata (%)",1,100)
@@ -223,7 +224,7 @@ if page == "Informazioni":
     st.markdown("""Codice: **[GitHub](https://github.com/giandata/streamlit) ** """)
 
     st.write("Creato: 23/01/2021")
-    st.write("Versione 1.0.1")
+    st.write("Versione 1.0.2")
 
 
 
