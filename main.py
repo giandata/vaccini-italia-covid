@@ -169,7 +169,7 @@ if page == "Tracciamento":
     residual_pop = ita_pop - vaccined_pop_start
     st.write(f"residual pop {residual_pop}")
 
-    pop_slider = st.slider("Percentuale popolazione vaccinata (%)",slider_start,float(100))
+    pop_slider = st.slider("Percentuale popolazione vaccinata (%)",slider_start,float(100),value=70.0)
     pop_perc = residual_pop * (pop_slider/100)
     residual_days=  round(((pop_perc-vaccined_pop_start)/avg_daily[0])+1,0).astype(int)
     if aggr_mean == "Giornaliera": 
