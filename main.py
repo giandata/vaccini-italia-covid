@@ -4,8 +4,6 @@ import os
 import pandas as pd
 import numpy as np
 
-import seaborn as sns
-sns.set_theme(style="whitegrid")
 import matplotlib.pyplot as plt
 
 base_url = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/"
