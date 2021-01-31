@@ -119,7 +119,7 @@ if page == "Tracciamento":
     
     
     
-    st.dataframe(df_somministrazioni) #ce la % somm
+    #st.dataframe(df_somministrazioni) #ce la % somm
     
     # fig, ax = plt.subplots(figsize=(6, 4))
     # sns.barplot(x="nome_area",y="percentuale_somministrazione",label="percentuale_somministrazione", data=(df_somministrazioni))
