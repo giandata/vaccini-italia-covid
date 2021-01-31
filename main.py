@@ -4,6 +4,10 @@ import os
 import pandas as pd
 import numpy as np
 
+import seaborn as sns
+sns.set_theme(style="whitegrid")
+import matplotlib.pyplot as plt
+
 base_url = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/"
 
 data_url = ["vaccini-summary-latest.csv",
@@ -44,6 +48,7 @@ def nice_header(string):
 
 tabs = ["Tracciamento","Consulta Dati","Informazioni",]
 
+st.sidebar.image("fiore.jpg",width=300)
 page = st.sidebar.selectbox("Pagine",tabs)
 
 def filter_data(df,column,filter_all):
@@ -67,14 +72,15 @@ def chart(df):
 
 if page == "Tracciamento":
     
-    chart1 = retrieve_data("vaccini-summary-latest.csv")
-    max_date = chart1["ultimo_aggiornamento"][0]
+    st.sidebar.write("Questa pagina contiene statistiche e visualizzazioni con gli ultimi dati disponibili delle vaccinazioni. Utilizzare i bottoni interattivi per personalizzare l'analisi.")
+    df_somministrazioni = retrieve_data("vaccini-summary-latest.csv")
+    max_date = df_somministrazioni["ultimo_aggiornamento"][0]
     st.text("")
         
     st.subheader(f"Statistiche generali - Dati aggiornati al **{max_date}**")    
 
-    dosi_consegnate = chart1["dosi_consegnate"].sum()
-    dosi_somministrate = chart1["dosi_somministrate"].sum()
+    dosi_consegnate = df_somministrazioni["dosi_consegnate"].sum()
+    dosi_somministrate = df_somministrazioni["dosi_somministrate"].sum()
     ratio_uso = round((dosi_somministrate / dosi_consegnate)*100,1)
 
     ita_pop = 60411237
@@ -116,6 +122,13 @@ if page == "Tracciamento":
         st.progress(ratio_pop_complete/100)
     
     
+    
+    st.dataframe(df_somministrazioni) #ce la % somm
+    
+    # fig, ax = plt.subplots(figsize=(6, 4))
+    # sns.barplot(x="nome_area",y="percentuale_somministrazione",label="percentuale_somministrazione", data=(df_somministrazioni))
+    # st.pyplot(fig)
+   
 
     
   
@@ -136,7 +149,9 @@ if page == "Tracciamento":
     else:
         st.success(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
     
+    
     st.area_chart(ss_somministrate)
+    
     st.text("Osservazioni")
     st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.
      In questo senso è importante che l'approviggionamento, la distribuzione e lo stoccaggio siano coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
@@ -145,7 +160,8 @@ if page == "Tracciamento":
     st.write("")
     st.subheader("Consegne dosi")
     df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
-    ss_consegnate = df_consegnate.groupby(["data_consegna"]).sum()
+    ss_consegnate = (df_consegnate.groupby(["data_consegna"]).sum())
+    ss_consegnate =ss_consegnate["numero_dosi"]
     st.bar_chart(ss_consegnate)
 
     
@@ -153,37 +169,62 @@ if page == "Tracciamento":
 
     st.subheader("Stime preliminari")
     aggr_mean= st.selectbox("Media",["Giornaliera","Settimanale","Mensile"])
-    pop_slider = st.slider("Percentuale popolazione vaccinata (%)",1,100)
-    pop_perc = ita_pop * (pop_slider/100)
-    if aggr_mean == "Giornaliera":
+    slider_start = float(ratio_pop_start)
+    residual_pop = ita_pop - vaccined_pop_start
+    st.write(f"residual pop {residual_pop}")
+
+    pop_slider = st.slider("Percentuale popolazione vaccinata (%)",slider_start,float(100))
+    pop_perc = residual_pop * (pop_slider/100)
+    residual_days=  round(((pop_perc-vaccined_pop_start)/avg_daily[0])+1,0).astype(int)
+    if aggr_mean == "Giornaliera": 
         avg_daily = round(ss_somministrate.mean(),0).astype(int)
-        st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{avg_daily[0]}**. ")
-        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round((pop_perc/avg_daily[0]),0).astype(int)}** giorni,ovvero in **{round((pop_perc/avg_daily[0])/365.25,2)}** anni.")
+        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{avg_daily[0]}**. ")
+        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{residual_days}** giorni,ovvero in **{round(residual_days/365.25,2)}** anni.")
     elif aggr_mean == "Settimanale":
         weekly = (avg_daily[0])*7
-        st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{weekly}**. ")
-        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round(pop_perc/weekly,0).astype(int)}** settimane.") 
+        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{weekly}**. ")
+        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round(residual_days/7,0).astype(int)}** settimane.") 
     else:
         monthly = ((avg_daily[0])*30.4375).astype(int)
-        st.write(f"La media {aggr_mean} di **prime-dosi** somministrate è al momento **{monthly}**. ")
-        st.write(f"Con questo volume, raggiungeremo il **{pop_slider/100} % ** della popolazione in **{round(pop_perc/monthly,0).astype(int)}** mesi.")     
+        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{monthly}**. ")
+        st.write(f"Con questo volume, raggiungeremo il **{pop_slider} % ** della popolazione in **{round(residual_days/30.4375,0).astype(int)}** mesi.")     
 
     if st.checkbox ("Vedere serie storica"):
         st.dataframe(ss_somministrate)
-
     
-    
-
-
- 
-
-
     st.write("")
-
+    
+    #st.dataframe(df_somministrate)
+    
+    coordinates =[['ABR',42.235347, 13.878107],
+        ['BAS',40.610803, 16.083839],
+        ['CAL',39.057941, 16.542682],
+        ['CAM',40.845651, 14.269339],
+        ['EMR',44.493665, 11.343094],
+        ['FVG',46.065878, 13.237700],
+        ['LAZ',41.890104, 12.493002],
+        ['LIG',44.409843, 8.925506],
+        ['LOM',45.464125, 9.190290],
+        ['MAR',43.612374, 13.511463],
+        ['MOL',41.920512, 14.801354],
+        ['PAB',46.497633, 11.354615],
+        ['PAT',46.071503, 11.115640],
+        ['PIE',45.072623, 7.686570],
+        ['PUG',41.120561, 16.869802],
+        ['SAR',40.090803, 9.157500],
+        ['SIC',37.542997, 14.188410],
+        ['TOS',43.773038, 11.255479],
+        ['UMB',43.113692, 12.387939],
+        ['VDA',45.737887, 7.322980],
+        ['VEN',45.492624, 12.185767]
+        ]
+    
+    #df_coord = pd.DataFrame(coordinates,columns=["region","latitude","longitude"])
+    #st.dataframe(df_coord)
 
     choice_chart = st.radio(label="Aggruppare dati per",options=("Regioni","Fascia anagrafica","Fornitore"))
     if choice_chart == "Regioni":
-        uso_region = df_somministrate.groupby(["area"]).sum()
+        uso_region = df_somministrate.groupby(["nome_area"]).sum()
         st.bar_chart(uso_region[["prima_dose","seconda_dose"]])
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
@@ -193,10 +234,8 @@ if page == "Tracciamento":
         st.bar_chart(uso_fornitore)
     
 
-
-    
-
 if page == "Consulta Dati":
+    st.sidebar.write("Questa pagina consente di visualizzare in forma tabulare i dati originali utilizzati in questa applicazione. ")
     for url in data_url:
         nice_header(url)
         data = render_checkbox(url)
@@ -212,17 +251,18 @@ if page == "Consulta Dati":
 if page == "Informazioni":
 
     st.image("fiore.jpg",width=700)
+    st.sidebar.write("Riferimenti generali")
 
-    st.write("Autori:")
-    st.subheader("Giancarlo Di Donato")
-    st.subheader("Francesco Di Donato")
+    
     st.write("")
-    st.write("Fonti:")
+    st.subheader("Fonti:")
     st.markdown("""**[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
     st.markdown("""[Worldometers](https://www.worldometers.info/world-population/italy-population/)""")
     
     st.markdown("""Codice: **[GitHub](https://github.com/giandata/streamlit) ** """)
-
+    st.subheader("Autori:")
+    st.write("Giancarlo Di Donato")
+    st.write("Francesco Di Donato")
     st.write("Creato: 23/01/2021")
     st.write("Versione 1.0.2")
 
