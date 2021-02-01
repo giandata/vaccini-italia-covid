@@ -168,18 +168,19 @@ if page == "Tracciamento":
     else:
         st.bar_chart(ss_consegnate.cumsum())
     with st.beta_expander("Analisi"):
-        st.markdown(""" Notare come le consegne avvengono a intervalli temporali irregolari: ci sono salti di anche 3-4 giorni tra una consegna e la successiva. Tuttavia le consegne si stanno stabilizzando durante i primi giorni della settimana, dal lunedì al mercoledì.""")
-        st.markdown("""Per quanto riguarda il volume di dosi consegnate, possiamo vedere che il ritmo è piuttosto stabile, quindi almeno nelle prime settimane non stiamo assistendo ad un incremento progressivo delle consegne. Si è raggiunto il primo milione di dosi consegnate in 13 giorni (30 dicembre-11 gennaio), mentre per il secondo milione ci sono voluti 15 giorni (11 - 26 gennaio).  """)
+        st.markdown("Notare come le consegne avvengono a intervalli temporali irregolari: ci sono salti di anche 3-4 giorni tra una consegna e la successiva. Tuttavia le consegne si stanno stabilizzando durante i primi giorni della settimana, dal lunedì al mercoledì.")
+        st.markdown("Per quanto riguarda il volume di dosi consegnate, possiamo vedere che il ritmo è piuttosto stabile, quindi almeno nelle prime settimane non stiamo assistendo ad un incremento progressivo delle consegne. Si è raggiunto il primo milione di dosi consegnate in 13 giorni (30 dicembre-11 gennaio), mentre per il secondo milione ci sono voluti 15 giorni (11 - 26 gennaio).  ")
 
     st.subheader("Stime preliminari")
-    aggr_mean= st.selectbox("Media",["Giornaliera","Settimanale","Mensile"])
+    st.markdown(" Considerando l'andamento di dosi utilizzate finora e tenendo in conto l'attuale popolazione italiana **(60,4 Milioni)**, è possibile produrre una stima lineare di quanto tempo è necessario per arrivare alla soglia richiesta.")
+    aggr_mean= st.selectbox("Media di dosi somministrate, aggregazione:",["Giornaliera","Settimanale","Mensile"])
     slider_start = float(ratio_pop_start)
     residual_pop = ita_pop - vaccined_pop_start
-
-
-    pop_slider = st.slider("Percentuale popolazione vaccinata (%)",slider_start,float(100),value=70.0)
+    st.markdown("""Selezionare la percentuale di popolazione su cui calcolare:""" )
+    pop_slider = st.slider("",slider_start,float(100),value=70.0)
     pop_perc = residual_pop * (pop_slider/100)
     residual_days=  round(((pop_perc-vaccined_pop_start)/avg_daily[0])+1,0).astype(int)
+    
     if aggr_mean == "Giornaliera": 
         avg_daily = round(ss_somministrate.mean(),0).astype(int)
         st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{avg_daily[0]}**. ")
@@ -197,8 +198,6 @@ if page == "Tracciamento":
         st.dataframe(ss_somministrate)
     
     st.write("")
-    
-    #st.dataframe(df_somministrate)
     
     coordinates =[['ABR',42.235347, 13.878107],
         ['BAS',40.610803, 16.083839],
@@ -226,7 +225,9 @@ if page == "Tracciamento":
     #df_coord = pd.DataFrame(coordinates,columns=["region","latitude","longitude"])
     #st.dataframe(df_coord)
 
-    choice_chart = st.radio(label="Aggruppare dati per",options=("Regioni","Fascia anagrafica","Fornitore"))
+    st.subheader("Ulteriori analisi")
+    st.markdown("Selezionare la dimensione per cui aggregare i dati: ")
+    choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica","Fornitore"))
     if choice_chart == "Regioni":
         uso_region = df_somministrate.groupby(["nome_area"]).sum()
         st.bar_chart(uso_region[["prima_dose","seconda_dose"]])
@@ -268,7 +269,7 @@ if page == "Informazioni":
     st.write("Giancarlo Di Donato")
     st.write("Francesco Di Donato")
     st.write("Creato: 23/01/2021")
-    st.write("Versione 1.0.2")
+    st.write("Ultimo aggiornamento: 01/02/2021")
 
 
 
