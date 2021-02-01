@@ -17,7 +17,7 @@ data_url = ["vaccini-summary-latest.csv",
 st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico")
 
 title_style = """
-<div style="background-color:#5ecc70",padding:4px;">
+<div style="background-color:#3b84e3",padding:5px;">
 <h1 style ="color:black">Monitoraggio dati vaccinazioni Covid-19 </h1>
 </div>
 """
@@ -98,39 +98,28 @@ if page == "Tracciamento":
     
     st.write ("Si considerano vaccinate le persone che hanno ricevuto la seconda dose entro a partire da 21 ed entro i 42 giorni successivi (3-6 settimane di distanza).")
 
+    col3,col4=st.beta_columns(2)
+    with col3:
+        if ratio_pop_start >= 60:
+            st.success(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
+            st.progress(ratio_pop_start/100)
+        elif ratio_pop_start >= 30:
+            st.warning(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start}% ({vaccined_pop_start}) ")
+            st.progress(ratio_pop_start/100)
+        else:
+            st.error(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
+            st.progress(ratio_pop_start/100)
+    with col4:
+        if ratio_pop_start >= 60:
+            st.success(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} %  ({vaccined_pop_complete})")
+            st.progress(ratio_pop_complete/100)
+        elif ratio_pop_start >= 30:
+            st.warning(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
+            st.progress(ratio_pop_complete/100)
+        else:
+            st.error(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
+            st.progress(ratio_pop_complete/100)
    
-    if ratio_pop_start >= 60:
-        st.success(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
-        st.progress(ratio_pop_start/100)
-    elif ratio_pop_start >= 30:
-        st.warning(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start}% ({vaccined_pop_start}) ")
-        st.progress(ratio_pop_start/100)
-    else:
-        st.error(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
-        st.progress(ratio_pop_start/100)
-
-    if ratio_pop_start >= 60:
-        st.success(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} %  ({vaccined_pop_complete})")
-        st.progress(ratio_pop_complete/100)
-    elif ratio_pop_start >= 30:
-        st.warning(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
-        st.progress(ratio_pop_complete/100)
-    else:
-        st.error(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
-        st.progress(ratio_pop_complete/100)
-    
-    
-    
-    #st.dataframe(df_somministrazioni) #ce la % somm
-    
-    # fig, ax = plt.subplots(figsize=(6, 4))
-    # sns.barplot(x="nome_area",y="percentuale_somministrazione",label="percentuale_somministrazione", data=(df_somministrazioni))
-    # st.pyplot(fig)
-   
-
-    
-  
-
     st.subheader("Utilizzo dosi")
     df_somministrate = retrieve_data("somministrazioni-vaccini-latest.csv")
     ss_somministrate = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate.index).sum()
@@ -155,7 +144,8 @@ if page == "Tracciamento":
         st.markdown("Per questo motivo è molto importante che le consegne, la distribuzione e lo stoccaggio siano ben coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
     
     
-    #lookup -21
+    #lookup -21 second doses- and alignint with first dosis
+
     st.write("")
     st.subheader("Consegne dosi")
     df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
