@@ -151,8 +151,8 @@ if page == "Tracciamento":
     st.area_chart(ss_somministrate)
     
     with st.beta_expander("Analisi"):
-        st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.
-     In questo senso è importante che l'approviggionamento, la distribuzione e lo stoccaggio siano coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
+        st.markdown("""All' approssimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.""") 
+        st.markdown("Per questo motivo è molto importante che le consegne, la distribuzione e lo stoccaggio siano ben coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
     
     
     #lookup -21
@@ -167,14 +167,15 @@ if page == "Tracciamento":
         st.bar_chart(ss_consegnate)
     else:
         st.bar_chart(ss_consegnate.cumsum())
-    
-
+    with st.beta_expander("Analisi"):
+        st.markdown(""" Notare come le consegne avvengono a intervalli temporali irregolari: ci sono salti di anche 3-4 giorni tra una consegna e la successiva. Tuttavia le consegne si stanno stabilizzando durante i primi giorni della settimana, dal lunedì al mercoledì.""")
+        st.markdown("""Per quanto riguarda il volume di dosi consegnate, possiamo vedere che il ritmo è piuttosto stabile, quindi almeno nelle prime settimane non stiamo assistendo ad un incremento progressivo delle consegne. Si è raggiunto il primo milione di dosi consegnate in 13 giorni (30 dicembre-11 gennaio), mentre per il secondo milione ci sono voluti 15 giorni (11 - 26 gennaio).  """)
 
     st.subheader("Stime preliminari")
     aggr_mean= st.selectbox("Media",["Giornaliera","Settimanale","Mensile"])
     slider_start = float(ratio_pop_start)
     residual_pop = ita_pop - vaccined_pop_start
-    st.write(f"residual pop {residual_pop}")
+
 
     pop_slider = st.slider("Percentuale popolazione vaccinata (%)",slider_start,float(100),value=70.0)
     pop_perc = residual_pop * (pop_slider/100)
