@@ -85,7 +85,7 @@ if page == "Tracciamento":
     with col1:
         st.info(f"Totale dosi consegnate:  {dosi_consegnate}")
     with col2:
-        st.info(f"Dosi somministrate  {dosi_somministrate}  ( **{ratio_uso} %** ) ")
+        st.info(f"Dosi somministrate  {dosi_somministrate}  (**{ratio_uso} %**) ")
 
 
     vaccined_df = retrieve_data("anagrafica-vaccini-summary-latest.csv")
