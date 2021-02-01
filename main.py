@@ -81,9 +81,11 @@ if page == "Tracciamento":
 
     ita_pop = 60411237
     #explore API worldometer
-
-    st.info(f"Totale dosi consegnate  {dosi_consegnate}")
-    st.info(f"Totale dosi somministrate  {dosi_somministrate}  ( **{ratio_uso} %** )  delle dosi distribuite")
+    col1,col2=st.beta_columns(2)
+    with col1:
+        st.info(f"Totale dosi consegnate:  {dosi_consegnate}")
+    with col2:
+        st.info(f"Dosi somministrate  {dosi_somministrate}  ( **{ratio_uso} %** ) ")
 
 
     vaccined_df = retrieve_data("anagrafica-vaccini-summary-latest.csv")
@@ -148,18 +150,23 @@ if page == "Tracciamento":
     
     st.area_chart(ss_somministrate)
     
-    st.text("Osservazioni")
-    st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.
+    with st.beta_expander("Analisi"):
+        st.markdown("""All' approsimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.
      In questo senso è importante che l'approviggionamento, la distribuzione e lo stoccaggio siano coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
+    
     
     #lookup -21
     st.write("")
     st.subheader("Consegne dosi")
     df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
     ss_consegnate = (df_consegnate.groupby(["data_consegna"]).sum())
-    ss_consegnate =ss_consegnate["numero_dosi"]
-    st.bar_chart(ss_consegnate)
-
+    ss_consegnate = ss_consegnate["numero_dosi"]
+    
+    choice1 = st.radio("Dati",options=["Giornalieri","Cumulati"])
+    if choice1 == "Giornalieri":
+        st.bar_chart(ss_consegnate)
+    else:
+        st.bar_chart(ss_consegnate.cumsum())
     
 
 
