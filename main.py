@@ -196,7 +196,7 @@ if page == "Tracciamento":
     if choice_chart == "Regioni":
         uso_region = df_somministrate.groupby(["nome_area"]).sum()
         st.bar_chart(uso_region[["prima_dose","seconda_dose"]])
-        st.dataframe(df_somministrate.groupby(["nome_area",""]))
+        
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
         st.bar_chart(uso_anagrafica)
