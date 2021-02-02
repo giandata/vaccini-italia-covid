@@ -137,7 +137,7 @@ if page == "Tracciamento":
         st.success(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
     
     
-    st.area_chart(ss_somministrate)
+    st.area_chart(ss_somministrate.rename(columns ={0:'Prima dose', 1:'Seconda dose'}),use_container_width =True)
     
     with st.beta_expander("Analisi"):
         st.markdown("""All' approssimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.""") 
@@ -189,31 +189,6 @@ if page == "Tracciamento":
     
     st.write("")
     
-    coordinates =[['ABR',42.235347, 13.878107],
-        ['BAS',40.610803, 16.083839],
-        ['CAL',39.057941, 16.542682],
-        ['CAM',40.845651, 14.269339],
-        ['EMR',44.493665, 11.343094],
-        ['FVG',46.065878, 13.237700],
-        ['LAZ',41.890104, 12.493002],
-        ['LIG',44.409843, 8.925506],
-        ['LOM',45.464125, 9.190290],
-        ['MAR',43.612374, 13.511463],
-        ['MOL',41.920512, 14.801354],
-        ['PAB',46.497633, 11.354615],
-        ['PAT',46.071503, 11.115640],
-        ['PIE',45.072623, 7.686570],
-        ['PUG',41.120561, 16.869802],
-        ['SAR',40.090803, 9.157500],
-        ['SIC',37.542997, 14.188410],
-        ['TOS',43.773038, 11.255479],
-        ['UMB',43.113692, 12.387939],
-        ['VDA',45.737887, 7.322980],
-        ['VEN',45.492624, 12.185767]
-        ]
-    
-    #df_coord = pd.DataFrame(coordinates,columns=["region","latitude","longitude"])
-    #st.dataframe(df_coord)
 
     st.subheader("Ulteriori analisi")
     st.markdown("Selezionare la dimensione per cui aggregare i dati: ")
@@ -221,6 +196,7 @@ if page == "Tracciamento":
     if choice_chart == "Regioni":
         uso_region = df_somministrate.groupby(["nome_area"]).sum()
         st.bar_chart(uso_region[["prima_dose","seconda_dose"]])
+        st.dataframe(df_somministrate.groupby(["nome_area",""]))
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
         st.bar_chart(uso_anagrafica)
@@ -262,5 +238,29 @@ if page == "Informazioni":
     st.write("Ultimo aggiornamento: 01/02/2021")
 
 
-
-
+ 
+    # coordinates =[['ABR',42.235347, 13.878107],
+    #     ['BAS',40.610803, 16.083839],
+    #     ['CAL',39.057941, 16.542682],
+    #     ['CAM',40.845651, 14.269339],
+    #     ['EMR',44.493665, 11.343094],
+    #     ['FVG',46.065878, 13.237700],
+    #     ['LAZ',41.890104, 12.493002],
+    #     ['LIG',44.409843, 8.925506],
+    #     ['LOM',45.464125, 9.190290],
+    #     ['MAR',43.612374, 13.511463],
+    #     ['MOL',41.920512, 14.801354],
+    #     ['PAB',46.497633, 11.354615],
+    #     ['PAT',46.071503, 11.115640],
+    #     ['PIE',45.072623, 7.686570],
+    #     ['PUG',41.120561, 16.869802],
+    #     ['SAR',40.090803, 9.157500],
+    #     ['SIC',37.542997, 14.188410],
+    #     ['TOS',43.773038, 11.255479],
+    #     ['UMB',43.113692, 12.387939],
+    #     ['VDA',45.737887, 7.322980],
+    #     ['VEN',45.492624, 12.185767]
+    #     ]
+    
+    #df_coord = pd.DataFrame(coordinates,columns=["region","latitude","longitude"])
+    #st.dataframe(df_coord)
