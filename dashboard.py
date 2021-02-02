@@ -5,10 +5,6 @@ import pandas as pd
 import numpy as np
 
 import altair as alt
-import vega
-#import matplotlib
-#import matplotlib.pyplot as plt
-
 
 base_url = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/"
 
