@@ -10,7 +10,10 @@ pygithub = "*"
 requests = "*"
 pandas = "*"
 python-dotenv = "*"
-seaborn = "*"
+altair = "*"
+altair-viewer = "*"
+vega = "*"
+vega-datasets = "*"
 
 [dev-packages]
 
