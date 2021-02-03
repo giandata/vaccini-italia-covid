@@ -84,7 +84,7 @@ if page == "Tracciamento":
     #explore API worldometer
     col1,col2=st.beta_columns(2)
     with col1:
-        st.info(f"Totale dosi consegnate:  {dosi_consegnate}")
+        st.info(f"Totale dosi consegnate:  **{dosi_consegnate}**")
     with col2:
         if ratio_uso <= 80:
             st.info(f"Dosi somministrate  {dosi_somministrate}  (**{ratio_uso} %**) ")
@@ -107,23 +107,23 @@ if page == "Tracciamento":
     col3,col4=st.beta_columns(2)
     with col3:
         if ratio_pop_start >= 60:
-            st.success(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
+            st.success(f"Popolazione che ha ricevuto prima dose: **{ratio_pop_start}%** ({vaccined_pop_start}) ")
             st.progress(ratio_pop_start/100)
         elif ratio_pop_start >= 30:
-            st.warning(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start}% ({vaccined_pop_start}) ")
+            st.warning(f"Popolazione che ha ricevuto prima dose: **{ratio_pop_start}%** ({vaccined_pop_start}) ")
             st.progress(ratio_pop_start/100)
         else:
-            st.error(f"Popolazione che ha ricevuto prima dose: {ratio_pop_start} % ({vaccined_pop_start}) ")
+            st.error(f"Popolazione che ha ricevuto prima dose: **{ratio_pop_start} %** ({vaccined_pop_start}) ")
             st.progress(ratio_pop_start/100)
     with col4:
         if ratio_pop_start >= 60:
-            st.success(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} %  ({vaccined_pop_complete})")
+            st.success(f"Popolazione vaccinata (doppia dose): **{ratio_pop_complete} %**  ({vaccined_pop_complete})")
             st.progress(ratio_pop_complete/100)
         elif ratio_pop_start >= 30:
-            st.warning(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
+            st.warning(f"Popolazione vaccinata (doppia dose): **{ratio_pop_complete} %** ({vaccined_pop_complete})")
             st.progress(ratio_pop_complete/100)
         else:
-            st.error(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
+            st.error(f"Popolazione vaccinata (doppia dose): **{ratio_pop_complete} %** ({vaccined_pop_complete})")
             st.progress(ratio_pop_complete/100)
     
     "---"
@@ -137,11 +137,11 @@ if page == "Tracciamento":
     available_days = round(available_doses/total_avg_daily,0).astype(int)
 
     if available_days <= 5:
-        st.error(f"A questo ritmo di somministrazione  sono disponibili dosi per altri **{available_days}** giorni")
+        st.error(f"Con l'attuale ritmo medio di **{total_avg_daily}** dosi somministrate al giorno, sono disponibili dosi per altri **{available_days}** giorni")
     elif available_days <= 10:
-        st.warning(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
+        st.warning(f"Con l'attuale ritmo medio di **{total_avg_daily}** dosi somministrate al giorno, sono disponibili dosi per altri **{available_days}** giorni")
     else:
-        st.success(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
+        st.success(f"Con l'attuale ritmo medio di **{total_avg_daily}** dosi somministrate al giorno, sono disponibili dosi per altri **{available_days}** giorni")
     
     df = ss_somministrate.reset_index(inplace = True)
     
@@ -167,17 +167,21 @@ if page == "Tracciamento":
     st.altair_chart(chart,use_container_width=True)
     
     with st.beta_expander("Analisi"):
-        st.markdown("""All' approssimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.""") 
-        st.markdown("Per questo motivo è molto importante che le consegne, la distribuzione e lo stoccaggio siano ben coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
+        st.markdown("""All' approssimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuovi individui che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.""") 
+        st.markdown("Per questo motivo è molto importante che le consegne, la distribuzione e lo stoccaggio siano ben coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato durante il periodo prescritto dal fornitore, le dosi usate in prima istanza sarebbero state sprecate.""")
     
     "---"
     st.write("")
     st.subheader("Consegne dosi")
+    st.write("Dati relativi alla ricezione delle forniture di dosi per l'Italia. ")
+    
     df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
     ss_consegnate = (df_consegnate.groupby(["data_consegna"]).sum())
     ss_consegnate = ss_consegnate["numero_dosi"]
     
-    choice1 = st.radio("Dati",options=["Giornalieri","Cumulati"])
+
+    
+    choice1 = st.radio("Vedere dati",options=["Giornalieri","Cumulati"])
     if choice1 == "Giornalieri":
         chart_daily = alt.Chart(ss_consegnate.reset_index()).mark_bar().encode(
         x="data_consegna",
@@ -229,7 +233,7 @@ if page == "Tracciamento":
     
     st.subheader("Ulteriori analisi")
     st.write("")
-    st.markdown("I dati riguardo le somministrazioni sono raccolti a livello regionale e includono caratteristiche socio demografiche come le categorie di appartenenza o le fascie anagrafiche.")
+    st.markdown("I dati riguardo le somministrazioni sono raccolti a livello regionale e includono caratteristiche socio-demografiche come le categorie di appartenenza o le fascie anagrafiche.")
     st.markdown("Cliccare i pulsanti per ottenere i grafici corrispondenti:")
     
     
