@@ -223,6 +223,8 @@ if page == "Tracciamento":
     choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica","Fornitore"))
     
     if choice_chart == "Regioni":
+        #add switch to % of total
+        #add map
         df_region = df_somministrate[["nome_area","prima_dose","seconda_dose"]].groupby(["nome_area"]).sum().reset_index()
     
         df_region_prima = df_region.drop("seconda_dose",axis=1)
@@ -234,13 +236,12 @@ if page == "Tracciamento":
         df_region_seconda["Somministrazione"] = "Seconda dose"
         
         df_region_stacked = pd.concat([df_region_prima,df_region_seconda],axis=0)
-        chart_region_stacked = alt.Chart(df_region_stacked).mark_bar().encode(
+        chart_region_stacked = alt.Chart(df_region_stacked).mark_bar(opacity=0.7).encode(
             x='Dosi somministrate:Q',
             y=alt.Y('nome_area:N',sort = '-x'),
-            color='Somministrazione'
-        ).properties(width=400)
-
+            color=alt.Color("Somministrazione",scale=alt.Scale(domain=domain, range=range_)))
         st.altair_chart(chart_region_stacked,use_container_width=True) 
+
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
         st.bar_chart(uso_anagrafica)
