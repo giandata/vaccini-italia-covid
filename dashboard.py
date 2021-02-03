@@ -223,8 +223,24 @@ if page == "Tracciamento":
     choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica","Fornitore"))
     
     if choice_chart == "Regioni":
-        uso_region = df_somministrate.groupby(["nome_area"]).sum()
-        st.bar_chart(uso_region[["prima_dose","seconda_dose"]])   
+        df_region = df_somministrate[["nome_area","prima_dose","seconda_dose"]].groupby(["nome_area"]).sum().reset_index()
+    
+        df_region_prima = df_region.drop("seconda_dose",axis=1)
+        df_region_prima.rename(columns={"prima_dose":"Dosi somministrate"},inplace=True)
+        df_region_prima["Somministrazione"] ="Prima dose"
+        
+        df_region_seconda = df_region.drop("prima_dose",axis=1)
+        df_region_seconda.rename(columns={"seconda_dose":"Dosi somministrate"},inplace=True)
+        df_region_seconda["Somministrazione"] = "Seconda dose"
+        
+        df_region_stacked = pd.concat([df_region_prima,df_region_seconda],axis=0)
+        chart_region_stacked = alt.Chart(df_region_stacked).mark_bar().encode(
+            x='Dosi somministrate:Q',
+            y=alt.Y('nome_area:N',sort = '-x'),
+            color='Somministrazione'
+        ).properties(width=400)
+
+        st.altair_chart(chart_region_stacked,use_container_width=True) 
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
         st.bar_chart(uso_anagrafica)
@@ -232,6 +248,7 @@ if page == "Tracciamento":
         uso_fornitore =  df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fornitore"]).sum()    
         st.bar_chart(uso_fornitore)
     
+
 if page == "Consulta Dati":
     st.sidebar.write("Questa pagina consente di visualizzare in forma tabulare i dati originali utilizzati in questa applicazione. ")
     for url in data_url:
