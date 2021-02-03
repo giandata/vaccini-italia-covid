@@ -239,13 +239,23 @@ if page == "Tracciamento":
         chart_region_stacked = alt.Chart(df_region_stacked).mark_bar(opacity=0.7).encode(
             x='Dosi somministrate:Q',
             y=alt.Y('nome_area:N',sort = '-x'),
-            color=alt.Color("Somministrazione",scale=alt.Scale(domain=domain, range=range_)))
+            color=alt.Color("Somministrazione",scale=alt.Scale(domain=domain, range=range_),legend=alt.Legend(orient="top")))
         st.altair_chart(chart_region_stacked,use_container_width=True) 
 
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
         st.bar_chart(uso_anagrafica)
+
     elif choice_chart == "Fornitore":
+        # df_somministrate.reset_index(inplace=True)
+        # st.dataframe(df_somministrate)
+        
+        # chart_fornitore=alt.Chart(df_somministrate).mark_area().encode(
+        #     x="data_somministrazione:T",
+        #     y="prima_dose:Q",
+        #     color="fornitore:N"
+        # )
+        # st.altair_chart(chart_fornitore,use_container_width=True)
         uso_fornitore =  df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fornitore"]).sum()    
         st.bar_chart(uso_fornitore)
     
