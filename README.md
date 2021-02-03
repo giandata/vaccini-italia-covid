@@ -6,4 +6,4 @@ Report dati Vaccinazioni, punti di distribuzione, somministrazioni. Dati aggrega
 
 Ultimo aggiornamento: 2 Febbraio 2021
 
-[Dashboard link](https://share.streamlit.io/giandata/vaccini-italia-covid/main.py)
+[Dashboard link](https://share.streamlit.io/giandata/vaccini-italia-covid/dashboard.py)
