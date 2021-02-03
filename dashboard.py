@@ -125,7 +125,8 @@ if page == "Tracciamento":
         else:
             st.error(f"Popolazione vaccinata (doppia dose): {ratio_pop_complete} % ({vaccined_pop_complete})")
             st.progress(ratio_pop_complete/100)
-   
+    
+    "---"
     st.subheader("Utilizzo dosi")
     df_somministrate = retrieve_data("somministrazioni-vaccini-latest.csv")
     ss_somministrate = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate.index).sum()
@@ -169,6 +170,7 @@ if page == "Tracciamento":
         st.markdown("""All' approssimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuove persone che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.""") 
         st.markdown("Per questo motivo è molto importante che le consegne, la distribuzione e lo stoccaggio siano ben coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato per alcuni soggetti le dosi usate in prima istanza sarebbero state sprecate.""")
     
+    "---"
     st.write("")
     st.subheader("Consegne dosi")
     df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
@@ -196,9 +198,9 @@ if page == "Tracciamento":
         st.markdown("Si osserva la cadenza irregolare delle consegne: ci sono interruzioni di anche 3-4 giorni tra una consegna e la successiva. Tuttavia le consegne si stanno stabilizzando durante i primi giorni della settimana, dal lunedì al mercoledì.")
         st.markdown("Per quanto riguarda il volume di dosi consegnate, possiamo vedere che il ritmo è piuttosto stabile, quindi almeno nelle prime settimane non stiamo assistendo ad un incremento progressivo delle consegne. Si è raggiunto il primo milione di dosi consegnate in 13 giorni (30 dicembre-11 gennaio), mentre per il secondo milione ci sono voluti 15 giorni (11 - 26 gennaio).  ")
 
-
+    "---"
     st.subheader("Stime preliminari")
-    st.markdown(" Considerando l'andamento di dosi utilizzate finora e tenendo in conto l'attuale popolazione italiana **(60,4 Milioni)**, è possibile stimare proporzionalmente quanto tempo è necessario per arrivare alla soglia richiesta.")
+    st.markdown(" Considerando l'andamento di dosi utilizzate finora e tenendo in conto l'attuale popolazione italiana **(60,4 Milioni)**, è possibile stimare proporzionalmente quanto tempo è necessario per raggiungere la quota richiesta.")
     aggr_mean= st.selectbox("Media di dosi somministrate, aggregazione:",["Giornaliera","Settimanale","Mensile"])
     slider_start = float(ratio_pop_start)
     residual_pop = ita_pop - vaccined_pop_start
@@ -279,7 +281,7 @@ if page == "Tracciamento":
            color=alt.Color("Somministrazione",scale=alt.Scale(domain=domain, range=range_),legend=alt.Legend(orient="top"))
         )
         st.altair_chart(chart_demo,use_container_width=True) 
-
+    "---"    
     # elif categorie
 
     # elif choice_chart == "Fornitore":
@@ -294,9 +296,7 @@ if page == "Tracciamento":
     #     # st.altair_chart(chart_fornitore,use_container_width=True)
     #     uso_fornitore =  df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fornitore"]).sum()    
     #     st.bar_chart(uso_fornitore)
-    
 
-   st.discourse() 
 
 if page == "Consulta Dati":
     st.sidebar.write("Questa pagina consente di visualizzare in forma tabulare i dati originali utilizzati in questa applicazione. ")
