@@ -23,7 +23,7 @@ st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico",la
 
 title_style = """
 <div style="background-color:#3b84e3",padding:5px;">
-<h1 style ="color:black">Monitoraggio dati vaccinazioni Covid-19 </h1>
+<h1 style ="color:black">Monitoraggio dati vaccinazioni Covid-19 💉 </h1>
 </div>
 """
 st.markdown(title_style,unsafe_allow_html=True)
@@ -74,7 +74,7 @@ if page == "Tracciamento":
     max_date = df_somministrazioni["ultimo_aggiornamento"][0]
     st.text("")
         
-    st.subheader(f"Statistiche generali - Dati aggiornati al **{max_date}**")    
+    st.subheader(f"Statistiche generali 📈- Dati aggiornati al **{max_date}**")    
 
     dosi_consegnate = df_somministrazioni["dosi_consegnate"].sum()
     dosi_somministrate = df_somministrazioni["dosi_somministrate"].sum()
@@ -127,7 +127,7 @@ if page == "Tracciamento":
             st.progress(ratio_pop_complete/100)
     
     "---"
-    st.subheader("Utilizzo dosi")
+    st.subheader("Utilizzo dosi 👨‍⚕️👩‍⚕️")
     df_somministrate = retrieve_data("somministrazioni-vaccini-latest.csv")
     ss_somministrate = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate.index).sum()
     
@@ -166,13 +166,13 @@ if page == "Tracciamento":
         ).interactive()
     st.altair_chart(chart,use_container_width=True)
     
-    with st.beta_expander("Analisi"):
+    with st.beta_expander("Analisi 🔬"):
         st.markdown("""All' approssimarsi dell'esaurimento delle scorte di dosi disponibili notiamo come la quantità di 'prima_dose', ovvero di nuovi individui che ricevono il vaccino, diminuisce drasticamente (fine gennaio). Tale tendenza trova riscontro nel fatto che è necessario usare le dosi rimaste per garantire la seconda dose per le persone che hanno già ricevuto la prima dose in precedenza.""") 
         st.markdown("Per questo motivo è molto importante che le consegne, la distribuzione e lo stoccaggio siano ben coordinati. Il rischio è di rendere completamente inefficace la somministrazione: qualora fosse impossibile completare il ciclo di vaccinazione iniziato durante il periodo prescritto dal fornitore, le dosi usate in prima istanza sarebbero state sprecate.""")
     
     "---"
     st.write("")
-    st.subheader("Consegne dosi")
+    st.subheader("Consegne dosi 🚑🚑")
     st.write("Dati relativi alla ricezione delle forniture di dosi per l'Italia. ")
     
     df_consegnate = retrieve_data("consegne-vaccini-latest.csv")
@@ -198,7 +198,7 @@ if page == "Tracciamento":
         legend=alt.Legend(orient="top"))
         ).interactive()
         st.altair_chart(chart_cumulated,use_container_width=True)
-    with st.beta_expander("Analisi"):
+    with st.beta_expander("Analisi 🔬"):
         st.markdown("Si osserva la cadenza irregolare delle consegne: ci sono interruzioni di anche 3-4 giorni tra una consegna e la successiva. In generale le consegne avvengono durante i primi giorni della settimana, dal lunedì al mercoledì.")
         st.markdown("Per quanto riguarda il volume di dosi consegnate, possiamo vedere che il ritmo è piuttosto stabile, quindi almeno nelle prime settimane non stiamo assistendo ad un incremento progressivo delle consegne. Si è raggiunto il primo milione di dosi consegnate in 13 giorni (30 dicembre-11 gennaio), mentre per il secondo milione ci sono voluti 15 giorni (11 - 26 gennaio).  ")
 
@@ -231,7 +231,7 @@ if page == "Tracciamento":
     
     st.write("")
     
-    st.subheader("Ulteriori analisi")
+    st.subheader("Ulteriori analisi 🧪")
     st.write("")
     st.markdown("I dati riguardo le somministrazioni sono raccolti a livello regionale e includono caratteristiche socio-demografiche come le categorie di appartenenza o le fascie anagrafiche.")
     st.markdown("Cliccare i pulsanti per ottenere i grafici corrispondenti:")
