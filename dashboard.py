@@ -195,7 +195,7 @@ if page == "Tracciamento":
         ).interactive()
         st.altair_chart(chart_cumulated,use_container_width=True)
     with st.beta_expander("Analisi"):
-        st.markdown("Si osserva la cadenza irregolare delle consegne: ci sono interruzioni di anche 3-4 giorni tra una consegna e la successiva. Tuttavia le consegne si stanno stabilizzando durante i primi giorni della settimana, dal lunedì al mercoledì.")
+        st.markdown("Si osserva la cadenza irregolare delle consegne: ci sono interruzioni di anche 3-4 giorni tra una consegna e la successiva. In generale le consegne avvengono durante i primi giorni della settimana, dal lunedì al mercoledì.")
         st.markdown("Per quanto riguarda il volume di dosi consegnate, possiamo vedere che il ritmo è piuttosto stabile, quindi almeno nelle prime settimane non stiamo assistendo ad un incremento progressivo delle consegne. Si è raggiunto il primo milione di dosi consegnate in 13 giorni (30 dicembre-11 gennaio), mentre per il secondo milione ci sono voluti 15 giorni (11 - 26 gennaio).  ")
 
     "---"
@@ -239,7 +239,7 @@ if page == "Tracciamento":
         clicked_regions = st.button('Grafico per regioni')
 
     with col6:
-        clicked_anagrafica = st.button('Grafico per fascie anagrafiche')
+        clicked_anagrafica = st.button('Grafico per fasce anagrafiche')
     
 
     if clicked_regions:
