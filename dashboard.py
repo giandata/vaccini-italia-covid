@@ -127,10 +127,10 @@ if page == "Tracciamento":
     total_avg_daily = avg_daily[0] + avg_daily[1]
     available_days = round(available_doses/total_avg_daily,0).astype(int)
 
-    if available_days >= 10:
-        st.success(f"A questo ritmo di somministrazione  sono disponibili dosi per altri **{available_days}** giorni")
-    elif available_days >= 5:
-        st.error(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
+    if available_days <= 5:
+        st.error(f"A questo ritmo di somministrazione  sono disponibili dosi per altri **{available_days}** giorni")
+    elif available_days <= 10:
+        st.warning(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
     else:
         st.success(f"A questo ritmo di somministrazione sono disponibili dosi per altri **{available_days}** giorni")
     
@@ -219,10 +219,20 @@ if page == "Tracciamento":
     
     st.subheader("Ulteriori analisi")
     st.write("")
-    st.markdown("Selezionare la dimensione per cui aggregare i dati: ")
-    choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica","Fornitore"))
+    st.markdown("I dati riguardo le somministrazioni sono raccolti a livello regionale e includono caratteristiche socio demografiche come le categorie di appartenenza o le fascie anagrafiche.")
+    st.markdown("Cliccare i pulsanti per ottenere i grafici corrispondenti:")
+    #choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica"))
     
-    if choice_chart == "Regioni":
+    col5,col6 = st.beta_columns(2)
+
+    with col5:
+        clicked_regions = st.button('Grafico per regioni')
+
+    with col6:
+        clicked_anagrafica = st.button('Grafico per fascie anagrafiche')
+    
+
+    if clicked_regions:
         #add switch to % of total
         #add map
         df_region = df_somministrate[["nome_area","prima_dose","seconda_dose"]].groupby(["nome_area"]).sum().reset_index()
@@ -242,22 +252,40 @@ if page == "Tracciamento":
             color=alt.Color("Somministrazione",scale=alt.Scale(domain=domain, range=range_),legend=alt.Legend(orient="top")))
         st.altair_chart(chart_region_stacked,use_container_width=True) 
 
-    elif choice_chart == "Fascia anagrafica":
+    else:
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
-        st.bar_chart(uso_anagrafica)
 
-    elif choice_chart == "Fornitore":
-        # df_somministrate.reset_index(inplace=True)
-        # st.dataframe(df_somministrate)
+        uso_anagrafica_prima = uso_anagrafica['prima_dose'].reset_index()
+        uso_anagrafica_prima.rename(columns={"prima_dose":"Dosi somministrate"},inplace=True)
+        uso_anagrafica_prima["Somministrazione"]='Prima dose'
+
+        uso_anagrafica_seconda = uso_anagrafica['seconda_dose'].reset_index()
+        uso_anagrafica_seconda.rename(columns={"seconda_dose":"Dosi somministrate"},inplace=True)
+        uso_anagrafica_seconda["Somministrazione"]='Seconda dose'
+
+        df_anagrafica = pd.concat([uso_anagrafica_prima,uso_anagrafica_seconda],axis=0)
+
+        chart_demo = alt.Chart(df_anagrafica).mark_bar(opacity=0.7).encode(
+            x='Dosi somministrate:Q',
+            y="fascia_anagrafica:O",
+           color=alt.Color("Somministrazione",scale=alt.Scale(domain=domain, range=range_),legend=alt.Legend(orient="top"))
+        )
+        st.altair_chart(chart_demo,use_container_width=True) 
+
+    # elif categorie
+
+    # elif choice_chart == "Fornitore":
+    #     # df_somministrate.reset_index(inplace=True)
+    #     # st.dataframe(df_somministrate)
         
-        # chart_fornitore=alt.Chart(df_somministrate).mark_area().encode(
-        #     x="data_somministrazione:T",
-        #     y="prima_dose:Q",
-        #     color="fornitore:N"
-        # )
-        # st.altair_chart(chart_fornitore,use_container_width=True)
-        uso_fornitore =  df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fornitore"]).sum()    
-        st.bar_chart(uso_fornitore)
+    #     # chart_fornitore=alt.Chart(df_somministrate).mark_area().encode(
+    #     #     x="data_somministrazione:T",
+    #     #     y="prima_dose:Q",
+    #     #     color="fornitore:N"
+    #     # )
+    #     # st.altair_chart(chart_fornitore,use_container_width=True)
+    #     uso_fornitore =  df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fornitore"]).sum()    
+    #     st.bar_chart(uso_fornitore)
     
 
 if page == "Consulta Dati":
