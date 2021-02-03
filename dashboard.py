@@ -183,14 +183,14 @@ if page == "Tracciamento":
         color=alt.Color("numero_dosi",scale=alt.Scale(scheme='blues'),
         legend=alt.Legend(orient="top"))
         ).interactive()
-    st.altair_chart(chart_cumulated,use_container_width=True)
+        st.altair_chart(chart_cumulated,use_container_width=True)
     with st.beta_expander("Analisi"):
-        st.markdown("Notare come le consegne avvengono a intervalli temporali irregolari: ci sono salti di anche 3-4 giorni tra una consegna e la successiva. Tuttavia le consegne si stanno stabilizzando durante i primi giorni della settimana, dal lunedì al mercoledì.")
+        st.markdown("Si osserva la cadenza irregolare delle consegne: ci sono interruzioni di anche 3-4 giorni tra una consegna e la successiva. Tuttavia le consegne si stanno stabilizzando durante i primi giorni della settimana, dal lunedì al mercoledì.")
         st.markdown("Per quanto riguarda il volume di dosi consegnate, possiamo vedere che il ritmo è piuttosto stabile, quindi almeno nelle prime settimane non stiamo assistendo ad un incremento progressivo delle consegne. Si è raggiunto il primo milione di dosi consegnate in 13 giorni (30 dicembre-11 gennaio), mentre per il secondo milione ci sono voluti 15 giorni (11 - 26 gennaio).  ")
 
 
     st.subheader("Stime preliminari")
-    st.markdown(" Considerando l'andamento di dosi utilizzate finora e tenendo in conto l'attuale popolazione italiana **(60,4 Milioni)**, è possibile produrre una stima lineare di quanto tempo è necessario per arrivare alla soglia richiesta.")
+    st.markdown(" Considerando l'andamento di dosi utilizzate finora e tenendo in conto l'attuale popolazione italiana **(60,4 Milioni)**, è possibile stimare proporzionalmente quanto tempo è necessario per arrivare alla soglia richiesta.")
     aggr_mean= st.selectbox("Media di dosi somministrate, aggregazione:",["Giornaliera","Settimanale","Mensile"])
     slider_start = float(ratio_pop_start)
     residual_pop = ita_pop - vaccined_pop_start
@@ -218,11 +218,14 @@ if page == "Tracciamento":
     st.write("")
     
     st.subheader("Ulteriori analisi")
+    st.write("")
     st.markdown("Selezionare la dimensione per cui aggregare i dati: ")
     choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica","Fornitore"))
     if choice_chart == "Regioni":
         uso_region = df_somministrate.groupby(["nome_area"]).sum()
         st.bar_chart(uso_region[["prima_dose","seconda_dose"]])
+
+        chart_region
         
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
