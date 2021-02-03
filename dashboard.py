@@ -1,9 +1,12 @@
+# core packages
 import streamlit as st
 import os
 
+# data packages
 import pandas as pd
 import numpy as np
 
+#visualization packages
 import altair as alt
 
 base_url = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/"
@@ -83,7 +86,12 @@ if page == "Tracciamento":
     with col1:
         st.info(f"Totale dosi consegnate:  {dosi_consegnate}")
     with col2:
-        st.info(f"Dosi somministrate  {dosi_somministrate}  (**{ratio_uso} %**) ")
+        if ratio_uso <= 80:
+            st.info(f"Dosi somministrate  {dosi_somministrate}  (**{ratio_uso} %**) ")
+        elif ratio_uso <= 90:
+            st.warning(f"Dosi somministrate  {dosi_somministrate}  (**{ratio_uso} %**) ")
+        else:
+            st.error(f"Dosi somministrate  {dosi_somministrate}  (**{ratio_uso} %**) ")
 
 
     vaccined_df = retrieve_data("anagrafica-vaccini-summary-latest.csv")
@@ -94,7 +102,7 @@ if page == "Tracciamento":
 
     ratio_pop_start = (round(((vaccined_pop_start)/ita_pop)*100,2))
     
-    st.write ("Si considerano vaccinate le persone che hanno ricevuto la seconda dose entro a partire da 21 ed entro i 42 giorni successivi (3-6 settimane di distanza).")
+    st.write ("Si considerano vaccinate le persone che hanno ricevuto la seconda dose entroad una distanza compresa tra i 21 e 42 giorni successivi alla prima somministrazione (3-6 settimane di distanza).")
 
     col3,col4=st.beta_columns(2)
     with col3:
@@ -221,7 +229,7 @@ if page == "Tracciamento":
     st.write("")
     st.markdown("I dati riguardo le somministrazioni sono raccolti a livello regionale e includono caratteristiche socio demografiche come le categorie di appartenenza o le fascie anagrafiche.")
     st.markdown("Cliccare i pulsanti per ottenere i grafici corrispondenti:")
-    #choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica"))
+    
     
     col5,col6 = st.beta_columns(2)
 
