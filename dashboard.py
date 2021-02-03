@@ -221,12 +221,10 @@ if page == "Tracciamento":
     st.write("")
     st.markdown("Selezionare la dimensione per cui aggregare i dati: ")
     choice_chart = st.radio(label="",options=("Regioni","Fascia anagrafica","Fornitore"))
+    
     if choice_chart == "Regioni":
         uso_region = df_somministrate.groupby(["nome_area"]).sum()
-        st.bar_chart(uso_region[["prima_dose","seconda_dose"]])
-
-        chart_region
-        
+        st.bar_chart(uso_region[["prima_dose","seconda_dose"]])   
     elif choice_chart == "Fascia anagrafica":
         uso_anagrafica = df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fascia_anagrafica"]).sum()
         st.bar_chart(uso_anagrafica)
