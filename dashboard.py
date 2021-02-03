@@ -102,7 +102,7 @@ if page == "Tracciamento":
 
     ratio_pop_start = (round(((vaccined_pop_start)/ita_pop)*100,2))
     
-    st.write ("Si considerano vaccinate le persone che hanno ricevuto la seconda dose entroad una distanza compresa tra i 21 e 42 giorni successivi alla prima somministrazione (3-6 settimane di distanza).")
+    st.write ("Si considerano vaccinate le persone che hanno ricevuto la seconda dose ad una distanza compresa tra i 21 e 42 giorni successivi alla prima somministrazione (3-6 settimane di distanza).")
 
     col3,col4=st.beta_columns(2)
     with col3:
@@ -295,6 +295,8 @@ if page == "Tracciamento":
     #     uso_fornitore =  df_somministrate[["prima_dose","seconda_dose"]].groupby(df_somministrate["fornitore"]).sum()    
     #     st.bar_chart(uso_fornitore)
     
+
+   st.discourse() 
 
 if page == "Consulta Dati":
     st.sidebar.write("Questa pagina consente di visualizzare in forma tabulare i dati originali utilizzati in questa applicazione. ")
