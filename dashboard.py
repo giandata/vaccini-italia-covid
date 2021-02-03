@@ -23,7 +23,7 @@ st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico",la
 
 title_style = """
 <div style="background-color:#3b84e3",padding:5px;">
-<h1 style ="color:black">Monitoraggio dati vaccinazioni Covid-19 💉💉 </h1>
+<h1 style ="color:black">Monitoraggio vaccinazioni Covid-19 💉💉 </h1>
 </div>
 """
 st.markdown(title_style,unsafe_allow_html=True)
