@@ -290,7 +290,7 @@ if page == "Informazioni":
     st.write("Giancarlo Di Donato")
     st.write("Francesco Di Donato")
     st.write("Creato: 23/01/2021")
-    st.write("Ultimo aggiornamento: 01/02/2021")
+    st.write("Ultimo aggiornamento: 03/02/2021")
 
 
  
