@@ -318,21 +318,24 @@ if page == "Consulta Dati":
 
 if page == "Informazioni":
 
+    
+
     st.image("fiore.jpg",width=700)
+    st.write("Applicazione per il monitoraggio della campagna italiana di vaccinazione Covid-19 ")
     st.sidebar.write("Riferimenti generali")
 
     
     st.write("")
     st.subheader("Fonti:")
-    st.markdown("""**[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati) **""")
+    st.markdown("""[Developers Italia](https://github.com/italia/covid19-opendata-vaccini/tree/master/dati)""")
     st.markdown("""[Worldometers](https://www.worldometers.info/world-population/italy-population/)""")
     
-    st.markdown("""Codice: **[GitHub](https://github.com/giandata/streamlit) ** """)
+    st.markdown("""Codice: [GitHub](https://github.com/giandata/streamlit) """)
     st.subheader("Autori:")
-    st.write("Giancarlo Di Donato")
-    st.write("Francesco Di Donato")
-    st.write("Creato: 23/01/2021")
-    st.write("Ultimo aggiornamento: 03/02/2021")
+    st.write("[Giancarlo Di Donato](https://www.linkedin.com/in/giancarlodidonato/)")
+    st.write("[Francesco Di Donato](https://github.com/didof)")
+    st.write("Creato il 23/01/2021")
+    st.write("Ultimo aggiornamento: **03/02/2021**")
 
 
  
