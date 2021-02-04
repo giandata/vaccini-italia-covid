@@ -48,7 +48,7 @@ def nice_header(string):
 
 tabs = ["Tracciamento","Consulta Dati","Informazioni",]
 st.sidebar.image("fiore.jpg",width=300)
-page = st.sidebar.radio("Tracciamento",tabs)
+page = st.sidebar.radio("Pagine",tabs)
 
 def filter_data(df,column,filter_all):
     cols=[]
