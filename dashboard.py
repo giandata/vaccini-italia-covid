@@ -205,7 +205,7 @@ if page == "Tracciamento":
 
     "---"
     st.subheader("Stime preliminari")
-    st.markdown(" Considerando l'andamento di dosi utilizzate finora e tenendo in conto l'attuale popolazione italiana **(60,4 Milioni)**, è possibile stimare proporzionalmente quanto tempo è necessario per raggiungere la quota richiesta.")
+    st.markdown(" Considerando l'andamento di dosi utilizzate negli ultimi 14 giorni e tenendo in conto l'attuale popolazione italiana **(60,4 Milioni)**, è possibile stimare proporzionalmente quanto tempo è necessario per raggiungere la quota richiesta.")
     aggr_mean= st.selectbox("Media di dosi somministrate, aggregazione:",["Giornaliera","Settimanale","Mensile"])
     slider_start = float(ratio_pop_start)
     residual_pop = ita_pop - vaccined_pop_start
@@ -220,11 +220,11 @@ if page == "Tracciamento":
         st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{residual_days}** giorni,ovvero in **{round(residual_days/365.25,2)}** anni.")
     elif aggr_mean == "Settimanale":
         weekly = (avg_daily_14[0])*7
-        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{weekly}**. ")
+        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate nelle ultime 2 settimane è al momento **{weekly}**. ")
         st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round(residual_days/7,0).astype(int)}** settimane.") 
     else:
         monthly = ((avg_daily_14[0])*30.4375).astype(int)
-        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{monthly}**. ")
+        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento di **{monthly}**. ")
         st.write(f"Con questo volume, raggiungeremo il **{pop_slider} % ** della popolazione in **{round(residual_days/30.4375,0).astype(int)}** mesi.")     
 
     if st.checkbox ("Vedere serie storica"):
