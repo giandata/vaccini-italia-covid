@@ -133,6 +133,7 @@ if page == "Tracciamento":
     
     available_doses = dosi_consegnate - dosi_somministrate
     avg_daily = round(ss_somministrate.mean(),0).astype(int)
+    avg_daily_14 = round(ss_somministrate.tail(14).mean(),0).astype(int)
     total_avg_daily = avg_daily[0] + avg_daily[1]
     available_days = round(available_doses/total_avg_daily,0).astype(int)
 
@@ -211,18 +212,18 @@ if page == "Tracciamento":
     st.markdown("""Selezionare la percentuale di popolazione su cui calcolare:""" )
     pop_slider = st.slider("",slider_start,float(100),value=70.0)
     pop_perc = residual_pop * (pop_slider/100)
-    residual_days=  round(((pop_perc-vaccined_pop_start)/avg_daily[0])+1,0).astype(int)
+    residual_days=  round(((pop_perc-vaccined_pop_start)/avg_daily_14[0])+1,0).astype(int)
     
     if aggr_mean == "Giornaliera": 
-        avg_daily = round(ss_somministrate.mean(),0).astype(int)
-        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{avg_daily[0]}**. ")
+        avg_daily_14 = round(ss_somministrate.tail(14).mean(),0).astype(int)
+        st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate negli ultimi 14 giorni è di **{avg_daily_14[0]}**. ")
         st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{residual_days}** giorni,ovvero in **{round(residual_days/365.25,2)}** anni.")
     elif aggr_mean == "Settimanale":
-        weekly = (avg_daily[0])*7
+        weekly = (avg_daily_14[0])*7
         st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{weekly}**. ")
         st.write(f"Con questo volume, raggiungeremo il **{pop_slider} %** della popolazione in **{round(residual_days/7,0).astype(int)}** settimane.") 
     else:
-        monthly = ((avg_daily[0])*30.4375).astype(int)
+        monthly = ((avg_daily_14[0])*30.4375).astype(int)
         st.write(f"La media **{aggr_mean}** di **prime-dosi** somministrate è al momento **{monthly}**. ")
         st.write(f"Con questo volume, raggiungeremo il **{pop_slider} % ** della popolazione in **{round(residual_days/30.4375,0).astype(int)}** mesi.")     
 
@@ -335,7 +336,7 @@ if page == "Informazioni":
     st.write("[Giancarlo Di Donato](https://www.linkedin.com/in/giancarlodidonato/)")
     st.write("[Francesco Di Donato](https://github.com/didof)")
     st.write("Creato il 23/01/2021")
-    st.write("Ultimo aggiornamento: **03/02/2021**")
+    st.write("Ultimo aggiornamento: **29/04/2021**")
 
 
  
