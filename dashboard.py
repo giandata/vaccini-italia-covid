@@ -19,7 +19,7 @@ data_url = ["vaccini-summary-latest.csv",
             "somministrazioni-vaccini-summary-latest.csv"
             ]
 
-#st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico",layout="wide")
+st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico",layout="wide")
 
 title_style = """
 <div style="background-color:#3b84e3",padding:5px;">
