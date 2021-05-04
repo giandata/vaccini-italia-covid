@@ -19,7 +19,7 @@ data_url = ["vaccini-summary-latest.csv",
             "somministrazioni-vaccini-summary-latest.csv"
             ]
 
-st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico",layout="wide")
+#st.set_page_config(page_title="Vaccinazioni Covid-19",page_icon="favicon.ico",layout="wide")
 
 title_style = """
 <div style="background-color:#3b84e3",padding:5px;">
@@ -69,7 +69,7 @@ def chart(df):
 
 if page == "Tracciamento":
     
-    st.sidebar.write("Questa pagina contiene statistiche e visualizzazioni con gli ultimi dati disponibili delle vaccinazioni. Utilizzare i bottoni interattivi per personalizzare l'analisi.")
+    #st.sidebar.write("Questa pagina contiene statistiche e visualizzazioni con gli ultimi dati disponibili delle vaccinazioni. Utilizzare i bottoni interattivi per personalizzare l'analisi.")
     df_somministrazioni = retrieve_data("vaccini-summary-latest.csv")
     max_date = df_somministrazioni["ultimo_aggiornamento"][0]
     st.text("")
