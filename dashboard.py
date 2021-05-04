@@ -69,7 +69,7 @@ def chart(df):
 
 if page == "Tracciamento":
     
-    #st.sidebar.write("Questa pagina contiene statistiche e visualizzazioni con gli ultimi dati disponibili delle vaccinazioni. Utilizzare i bottoni interattivi per personalizzare l'analisi.")
+    st.sidebar.write("Questa pagina contiene statistiche e visualizzazioni con gli ultimi dati disponibili delle vaccinazioni. Utilizzare i bottoni interattivi per personalizzare l'analisi.")
     df_somministrazioni = retrieve_data("vaccini-summary-latest.csv")
     max_date = df_somministrazioni["ultimo_aggiornamento"][0]
     st.text("")
